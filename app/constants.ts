@@ -1,0 +1,10 @@
+const ENTRY_UID = 'blt3a7fea4498429bc2';
+const CONTENT_TYPE_UID = 'test_content_type';
+export const CLIENT_ID = 'QhEyHzxDIYeGZFN_';
+export const CLIENT_SECRET = process.env['CLIENT_SECRET'];
+const APP_UID = '628ba758d922620018019fac';
+export const OAUTH_REDIRECT_URI = 'http://localhost:3000/oauth/callback';
+export const ENTRY_URL = `https://api.contentstack.io/v3/content_types/${CONTENT_TYPE_UID}/entries/${ENTRY_UID}`;
+export const REDIRECT_URL = `https://app.contentstack.com/#!/apps/${APP_UID}/authorize?client_id=${CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code`;
+export const TOKEN_URL = 'https://app.contentstack.com/apps-api/apps/token';
+export const API_KEY = 'blt167ab95ac670dcac';
