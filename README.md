@@ -2,9 +2,20 @@
 
 This is a simple web app for demoing Contentstack's OAuth capabilities
 
+First, create an app on the [Contentstack Developer Hub].
+
+Next, add the following user token scopes:
+
+- cm.entries.management:read
+- cm.entries.management:write
+- cm.entry:read
+- cm.entry:write
+
+In a stack in your organization, you can create a sample content type with a single line text box field called "body".
+
 To run locally,
 
-Create a new `.env` file in the root directory. You can customize the following environment variables here.
+Create a new `.env` file in the root directory. You can customize the following environment variables here. All except `CLIENT_SECRET` is optional.
 
 ```
 APP_URL="https://app.contentstack.com"
@@ -23,3 +34,5 @@ Then, start the application using the fillowing command.
 ```
 $ npm run dev
 ```
+
+[Contentstack Developer Hub]: https://www.contentstack.com/docs/developers/developer-hub/
