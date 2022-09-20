@@ -3,12 +3,20 @@ import {
   useState,
 } from 'react';
 
+import crypto from 'crypto';
 import {
   API_KEY,
   ENTRY_URL,
   REDIRECT_URL,
 } from '~/constants';
-import { oauthTokenContainer } from '~/cookies';
+import {
+  CODE_VERIFIER_COOKIE_NAME,
+  OAUTH_TOKEN_COOKIE_NAME,
+} from '~/cookie-names';
+import {
+  codeVerifierContainer,
+  oauthTokenContainer,
+} from '~/cookies';
 
 import {
   json,
@@ -40,7 +48,21 @@ export async function action({ request }: { request: Request }) {
 
   switch (formData.get('action')) {
     case LOGIN_ACTION:
-      return redirect(REDIRECT_URL);
+      let redirectUrl = REDIRECT_URL;
+      const usePkce = formData.get('usePkce') === 'true';
+      if (usePkce) {
+        const { codeChallenge, codeVerifier, codeChallengeMethod } = generatePkcePair();
+        redirectUrl = `${redirectUrl}&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`;
+        const cookie = await codeVerifierContainer.serialize(codeVerifier);
+
+        return redirect(redirectUrl, {
+          headers: {
+            "Set-Cookie": cookie,
+          }
+        });
+      } else {
+        return redirect(redirectUrl);
+      }
 
     case UPDATE_ENTRY_ACTION:
       const title = formData.get("title");
@@ -100,7 +122,8 @@ async function updatePost(oauthToken: string, title: string, body: string) {
 
 function logoutAction(e: any) {
   e.preventDefault();
-  document.cookie = "x-cs-oauth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = `${OAUTH_TOKEN_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `${CODE_VERIFIER_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   window.location.reload();
 }
 
@@ -122,6 +145,16 @@ function LoginForm() {
     <Form method="post">
       <p>
         You are not logged in.
+      </p>
+      <p>
+        <label>
+          Use PKCE flow:{" "}
+          <input
+            type="checkbox"
+            name="usePkce"
+            value="true"
+          />
+        </label>
       </p>
       <p className="text-right">
         <button
@@ -190,4 +223,19 @@ function EntryForm() {
       </p>
     </Form>
   )
+}
+
+function generatePkcePair(): { codeChallenge: string, codeVerifier: string, codeChallengeMethod: string } {
+  const codeVerifier = crypto.pseudoRandomBytes(32).toString('hex');
+  const digest = crypto.createHash('sha256').update(codeVerifier).digest();
+  const codeChallenge = digest.toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
+
+  return {
+    codeVerifier,
+    codeChallenge,
+    codeChallengeMethod: 'S256',
+  };
 }

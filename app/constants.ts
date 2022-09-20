@@ -10,6 +10,6 @@ if (!CLIENT_SECRET) {
 const APP_UID = process.env['APP_UID'] || '628ba758d922620018019fac';
 export const OAUTH_REDIRECT_URI = process.env['OAUTH_REDIRECT_URI'] || 'http://localhost:3000/oauth/callback';
 export const ENTRY_URL = `${API_URL}/v3/content_types/${CONTENT_TYPE_UID}/entries/${ENTRY_UID}`;
-export const REDIRECT_URL = `${APP_URL}/#!/apps/${APP_UID}/authorize?client_id=${CLIENT_ID}&redirect_uri=${OAUTH_REDIRECT_URI}&response_type=code`;
+export const REDIRECT_URL = `${APP_URL}/apps/${APP_UID}/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(OAUTH_REDIRECT_URI)}&response_type=code`;
 export const TOKEN_URL = `${APP_URL}/apps-api/apps/token`;
 export const API_KEY = process.env['API_KEY'] || 'blt167ab95ac670dcac';
