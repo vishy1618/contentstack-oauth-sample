@@ -29,10 +29,16 @@ ENTRY_UID="blt3a7fea4498429bc2"
 OAUTH_REDIRECT_URI="http://localhost:3000/oauth/callback"
 ```
 
-Then, start the application using the fillowing command.
+Install packages:
 
 ```
-$ npm run dev
+$ npm install
+```
+
+Then, start the application using the following command.
+
+```
+$ npm run start
 ```
 
 [Contentstack Developer Hub]: https://www.contentstack.com/docs/developers/developer-hub/
